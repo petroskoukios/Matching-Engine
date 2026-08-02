@@ -1,4 +1,6 @@
-# matching-engine
+# Matching-Engine
+
+[![CI](https://github.com/petroskoukios/Matching-Engine/actions/workflows/ci.yml/badge.svg)](https://github.com/petroskoukios/Matching-Engine/actions/workflows/ci.yml)
 
 A limit order book and matching engine written in C++20, designed
 for low-latency operation. It implements price–time priority matching with

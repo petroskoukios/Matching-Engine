@@ -1,6 +1,6 @@
-#include "orderbook/orderbook.hpp"
-
 #include <gtest/gtest.h>
+
+#include "orderbook/orderbook.hpp"
 
 TEST(EngineTest, GreetingReportsWiring) {
     orderbook::Engine engine;

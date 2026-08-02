@@ -3,11 +3,11 @@
 #include <string>
 
 namespace orderbook {
-    
+
 // Placeholder to prove build wiring
 class Engine {
-public:
+   public:
     std::string greeting() const;
 };
 
-} // namespace orderbook
+}  // namespace orderbook
