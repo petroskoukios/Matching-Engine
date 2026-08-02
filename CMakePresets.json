@@ -1,0 +1,36 @@
+{
+  "version": 6,
+  "configurePresets": [
+    {
+      "name": "correctness",
+      "displayName": "Correctness — sanitized, warnings-as-errors",
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/build/correctness",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug",
+        "ENABLE_SANITIZERS": "ON"
+      }
+    },
+    {
+      "name": "perf",
+      "displayName": "Performance — optimized, NO sanitizers",
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/build/perf",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release",
+        "ENABLE_SANITIZERS": "OFF"
+      }
+    }
+  ],
+  "buildPresets": [
+    { "name": "correctness", "configurePreset": "correctness" },
+    { "name": "perf", "configurePreset": "perf" }
+  ],
+  "testPresets": [
+    {
+      "name": "correctness",
+      "configurePreset": "correctness",
+      "output": { "outputOnFailure": true }
+    }
+  ]
+}
