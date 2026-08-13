@@ -1,13 +1,35 @@
 #pragma once
 
-#include <string>
+#include <list>
+#include <map>
+#include <optional>
+#include <unordered_map>
+
+#include "orderbook/types.hpp"
 
 namespace orderbook {
 
-// Placeholder to prove build wiring
-class Engine {
+enum class ErrorCode : std::uint8_t {
+    Ok = 0,
+    DuplicateId,
+    InvalidId,
+    InvalidQuantity,
+    MarketOrderCannotRest,
+};
+
+class OrderBook {
    public:
-    std::string greeting() const;
+    [[nodiscard]] ErrorCode add(const Order& order);      // rest a limit order in the book
+    [[nodiscard]] ErrorCode cancel(OrderID id);           // remove entirely
+    [[nodiscard]] std::optional<Price> best_bid() const;  // highest resting buy
+    [[nodiscard]] std::optional<Price> best_ask() const;  // lowest resting sell
+    [[nodiscard]] Quantity quantity_at(Side side,
+                                       Price price) const;  // total resting volume at a level
+
+   private:
+    std::map<Price, std::list<Order>, std::greater<Price>> price_levels_bid;
+    std::map<Price, std::list<Order>, std::less<Price>> price_levels_ask;
+    std::unordered_map<OrderID, std::list<Order>::iterator> orders_map;
 };
 
 }  // namespace orderbook

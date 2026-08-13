@@ -42,7 +42,7 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(googletest)
 
 enable_testing()
-add_executable(orderbook_tests tests/test_placeholder.cpp tests/test_types.cpp)
+add_executable(orderbook_tests tests/test_orderbook.cpp tests/test_types.cpp)
 target_link_libraries(orderbook_tests
     PRIVATE orderbook project_warnings GTest::gtest_main)
 include(GoogleTest)
