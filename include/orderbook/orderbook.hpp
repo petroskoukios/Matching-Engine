@@ -20,7 +20,7 @@ enum class ErrorCode : std::uint8_t {
 class OrderBook {
    public:
     [[nodiscard]] ErrorCode add(const Order& order);      // rest a limit order in the book
-    [[nodiscard]] ErrorCode cancel(OrderID id);           // remove entirely
+    [[nodiscard]] ErrorCode cancel(OrderId id);           // remove entirely
     [[nodiscard]] std::optional<Price> best_bid() const;  // highest resting buy
     [[nodiscard]] std::optional<Price> best_ask() const;  // lowest resting sell
     [[nodiscard]] Quantity quantity_at(Side side,
@@ -29,7 +29,7 @@ class OrderBook {
    private:
     std::map<Price, std::list<Order>, std::greater<Price>> price_levels_bid_;
     std::map<Price, std::list<Order>, std::less<Price>> price_levels_ask_;
-    std::unordered_map<OrderID, std::list<Order>::iterator> orders_map_;
+    std::unordered_map<OrderId, std::list<Order>::iterator> orders_map_;
 };
 
 }  // namespace orderbook

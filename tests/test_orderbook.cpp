@@ -7,7 +7,7 @@ class OrderBookTest : public ::testing::Test {
 protected:
     orderbook::OrderBook book;
 
-    static orderbook::Order make_order(orderbook::OrderID id,
+    static orderbook::Order make_order(orderbook::OrderId id,
                                        orderbook::Price price = 100,
                                        orderbook::Quantity qty = 5,
                                        orderbook::Side side = orderbook::Side::Buy,

@@ -19,7 +19,7 @@ ErrorCode OrderBook::add(const Order& order) {  // rest a limit order in the boo
     return ErrorCode::Ok;
 }
 
-ErrorCode OrderBook::cancel(OrderID id) {  // remove entirely
+ErrorCode OrderBook::cancel(OrderId id) {  // remove entirely
     auto index_it = orders_map_.find(id);
     if (index_it == orders_map_.end()) return ErrorCode::InvalidId;
 
