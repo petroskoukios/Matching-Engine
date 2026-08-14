@@ -27,9 +27,9 @@ class OrderBook {
                                        Price price) const;  // total resting volume at a level
 
    private:
-    std::map<Price, std::list<Order>, std::greater<Price>> price_levels_bid;
-    std::map<Price, std::list<Order>, std::less<Price>> price_levels_ask;
-    std::unordered_map<OrderID, std::list<Order>::iterator> orders_map;
+    std::map<Price, std::list<Order>, std::greater<Price>> price_levels_bid_;
+    std::map<Price, std::list<Order>, std::less<Price>> price_levels_ask_;
+    std::unordered_map<OrderID, std::list<Order>::iterator> orders_map_;
 };
 
 }  // namespace orderbook
