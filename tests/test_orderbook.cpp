@@ -4,11 +4,10 @@
 #include "orderbook/types.hpp"
 
 class OrderBookTest : public ::testing::Test {
-protected:
+   protected:
     orderbook::OrderBook book;
 
-    static orderbook::Order make_order(orderbook::OrderId id,
-                                       orderbook::Price price = 100,
+    static orderbook::Order make_order(orderbook::OrderId id, orderbook::Price price = 100,
                                        orderbook::Quantity qty = 5,
                                        orderbook::Side side = orderbook::Side::Buy,
                                        orderbook::OrderType type = orderbook::OrderType::Limit) {

@@ -1,5 +1,6 @@
 #pragma once
 
+#include <iosfwd>
 #include <list>
 #include <map>
 #include <optional>
@@ -16,6 +17,8 @@ enum class ErrorCode : std::uint8_t {
     InvalidQuantity,
     MarketOrderCannotRest,
 };
+
+std::ostream& operator<<(std::ostream& os, ErrorCode code);
 
 class OrderBook {
    public:

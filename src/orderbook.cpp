@@ -1,5 +1,7 @@
 #include "orderbook/orderbook.hpp"
 
+#include <ostream>
+
 namespace orderbook {
 
 ErrorCode OrderBook::add(const Order& order) {  // rest a limit order in the book
@@ -69,6 +71,22 @@ Quantity OrderBook::quantity_at(Side side, Price price) const {
         for (const auto& order : level) quantity += order.quantity;
     }
     return quantity;
+}
+
+std::ostream& operator<<(std::ostream& os, ErrorCode code) {
+    switch (code) {
+        case ErrorCode::Ok:
+            return os << "Ok";
+        case ErrorCode::DuplicateId:
+            return os << "DuplicateId";
+        case ErrorCode::InvalidId:
+            return os << "InvalidId";
+        case ErrorCode::InvalidQuantity:
+            return os << "InvalidQuantity";
+        case ErrorCode::MarketOrderCannotRest:
+            return os << "MarketOrderCannotRest";
+    }
+    return os << "UnknownErrorCode";
 }
 
 }  // namespace orderbook
