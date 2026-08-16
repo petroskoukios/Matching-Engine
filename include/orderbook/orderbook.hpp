@@ -5,6 +5,7 @@
 #include <map>
 #include <optional>
 #include <unordered_map>
+#include <vector>
 
 #include "orderbook/types.hpp"
 
@@ -22,8 +23,11 @@ std::ostream& operator<<(std::ostream& os, ErrorCode code);
 
 class OrderBook {
    public:
-    [[nodiscard]] ErrorCode add(const Order& order);      // rest a limit order in the book
-    [[nodiscard]] ErrorCode cancel(OrderId id);           // remove entirely
+    [[nodiscard]] ErrorCode add(const Order& order);  // rest a limit order in the book
+    [[nodiscard]] ErrorCode submit(
+        const Order& order,
+        std::vector<Trade>& trades);             // execute order, add to orderbook, append trades
+    [[nodiscard]] ErrorCode cancel(OrderId id);  // remove entirely
     [[nodiscard]] std::optional<Price> best_bid() const;  // highest resting buy
     [[nodiscard]] std::optional<Price> best_ask() const;  // lowest resting sell
     [[nodiscard]] Quantity quantity_at(Side side,

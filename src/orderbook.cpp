@@ -35,10 +35,21 @@ Quantity sum_at(const Levels& levels, Price price) {
 }
 
 }  // namespace
-ErrorCode OrderBook::add(const Order& order) {  // rest a limit order in the book
+
+ErrorCode OrderBook::submit(
+    const Order& order, std::vector<Trade>&) {  // execute order, add to orderbook, append trades
     if (orders_map_.contains(order.id)) return ErrorCode::DuplicateId;
     if (order.quantity == 0) return ErrorCode::InvalidQuantity;
-    if (order.type == OrderType::Market) return ErrorCode::MarketOrderCannotRest;
+    if (order.type == OrderType::Limit)
+        return add(order);
+    else
+        return cancel(order.id);
+}
+
+ErrorCode OrderBook::add(const Order& order) {  // rest a limit order in the book
+    assert(orders_map_.contains(order.id));
+    assert(order.quantity == 0);
+    assert(order.type == OrderType::Market);
 
     auto it = order.side == Side::Buy ? insert_at_side(price_levels_bid_, order)
                                       : insert_at_side(price_levels_ask_, order);
