@@ -1,23 +1,48 @@
 #include "orderbook/orderbook.hpp"
 
+#include <cassert>
 #include <ostream>
 
 namespace orderbook {
 
+namespace {
+
+template <typename Levels>
+std::list<Order>::iterator insert_at_side(Levels& levels, const Order& order) {
+    auto& level = levels[order.price];
+    return level.insert(level.end(), order);
+}
+
+template <typename Levels>
+void remove_at_side(Levels& levels, const std::list<Order>::iterator order_it) {
+    auto level_it = levels.find(order_it->price);
+    assert(level_it != levels.end());
+    auto& level = level_it->second;
+    level.erase(order_it);
+    if (level.empty()) levels.erase(level_it);
+}
+
+template <typename Levels>
+Quantity sum_at(const Levels& levels, Price price) {
+    auto it = levels.find(price);
+    if (it == levels.end()) return 0;
+
+    Quantity quantity = 0;
+    for (const auto& order : it->second) {
+        quantity += order.quantity;
+    }
+    return quantity;
+}
+
+}  // namespace
 ErrorCode OrderBook::add(const Order& order) {  // rest a limit order in the book
     if (orders_map_.contains(order.id)) return ErrorCode::DuplicateId;
     if (order.quantity == 0) return ErrorCode::InvalidQuantity;
     if (order.type == OrderType::Market) return ErrorCode::MarketOrderCannotRest;
 
-    if (order.side == Side::Buy) {
-        auto& level = price_levels_bid_[order.price];
-        auto it = level.insert(level.end(), order);
-        orders_map_[order.id] = it;
-    } else {
-        auto& level = price_levels_ask_[order.price];
-        auto it = level.insert(level.end(), order);
-        orders_map_[order.id] = it;
-    }
+    auto it = order.side == Side::Buy ? insert_at_side(price_levels_bid_, order)
+                                      : insert_at_side(price_levels_ask_, order);
+    orders_map_[order.id] = it;
     return ErrorCode::Ok;
 }
 
@@ -26,25 +51,18 @@ ErrorCode OrderBook::cancel(OrderId id) {  // remove entirely
     if (index_it == orders_map_.end()) return ErrorCode::InvalidId;
 
     auto order_it = index_it->second;
-    Order order = *order_it;
 
-    switch (order.side) {
-        case Side::Buy: {
-            auto& level = price_levels_bid_.at(order.price);
-            level.erase(order_it);
-            if (level.empty()) price_levels_bid_.erase(order.price);
-            break;
-        }
-        case Side::Sell: {
-            auto& level = price_levels_ask_.at(order.price);
-            level.erase(order_it);
-            if (level.empty()) price_levels_ask_.erase(order.price);
-            break;
-        }
-    }
+    if (order_it->side == Side::Buy)
+        remove_at_side(price_levels_bid_, order_it);
+    else
+        remove_at_side(price_levels_ask_, order_it);
 
     orders_map_.erase(index_it);
     return ErrorCode::Ok;
+}
+
+Quantity OrderBook::quantity_at(Side side, Price price) const {  // total resting volume at a level
+    return side == Side::Buy ? sum_at(price_levels_bid_, price) : sum_at(price_levels_ask_, price);
 }
 
 std::optional<Price> OrderBook::best_bid() const {  // highest resting buy
@@ -55,22 +73,6 @@ std::optional<Price> OrderBook::best_bid() const {  // highest resting buy
 std::optional<Price> OrderBook::best_ask() const {  // lowest resting sell
     if (price_levels_ask_.empty()) return std::nullopt;
     return price_levels_ask_.begin()->first;
-}
-
-Quantity OrderBook::quantity_at(Side side, Price price) const {
-    Quantity quantity = 0;
-    if (side == Side::Buy) {
-        auto it = price_levels_bid_.find(price);
-        if (it == price_levels_bid_.end()) return 0;
-        const auto& level = it->second;
-        for (const auto& order : level) quantity += order.quantity;
-    } else {
-        auto it = price_levels_ask_.find(price);
-        if (it == price_levels_ask_.end()) return 0;
-        const auto& level = it->second;
-        for (const auto& order : level) quantity += order.quantity;
-    }
-    return quantity;
 }
 
 std::ostream& operator<<(std::ostream& os, ErrorCode code) {

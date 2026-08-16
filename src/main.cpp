@@ -4,12 +4,36 @@
 
 int main() {
     orderbook::OrderBook book;
-    orderbook::Order order1{.id = 1, .price = 100, .quantity = 5, .side = orderbook::Side::Buy, .type = orderbook::OrderType::Limit};
-    orderbook::Order order2{.id = 2, .price = 100, .quantity = 5, .side = orderbook::Side::Buy, .type = orderbook::OrderType::Limit};
-    orderbook::Order order3{.id = 3, .price = 101, .quantity = 5, .side = orderbook::Side::Buy, .type = orderbook::OrderType::Limit};
-    orderbook::Order order4{.id = 4, .price = 102, .quantity = 5, .side = orderbook::Side::Sell, .type = orderbook::OrderType::Limit};
-    orderbook::Order order5{.id = 5, .price = 103, .quantity = 5, .side = orderbook::Side::Sell, .type = orderbook::OrderType::Limit};
-    orderbook::Order order6{.id = 6, .price = 103, .quantity = 5, .side = orderbook::Side::Sell, .type = orderbook::OrderType::Limit};
+    orderbook::Order order1{.id = 1,
+                            .price = 100,
+                            .quantity = 5,
+                            .side = orderbook::Side::Buy,
+                            .type = orderbook::OrderType::Limit};
+    orderbook::Order order2{.id = 2,
+                            .price = 100,
+                            .quantity = 5,
+                            .side = orderbook::Side::Buy,
+                            .type = orderbook::OrderType::Limit};
+    orderbook::Order order3{.id = 3,
+                            .price = 101,
+                            .quantity = 5,
+                            .side = orderbook::Side::Buy,
+                            .type = orderbook::OrderType::Limit};
+    orderbook::Order order4{.id = 4,
+                            .price = 102,
+                            .quantity = 5,
+                            .side = orderbook::Side::Sell,
+                            .type = orderbook::OrderType::Limit};
+    orderbook::Order order5{.id = 5,
+                            .price = 103,
+                            .quantity = 5,
+                            .side = orderbook::Side::Sell,
+                            .type = orderbook::OrderType::Limit};
+    orderbook::Order order6{.id = 6,
+                            .price = 103,
+                            .quantity = 5,
+                            .side = orderbook::Side::Sell,
+                            .type = orderbook::OrderType::Limit};
 
     std::cout << book.add(order1) << "\n";
     std::cout << book.add(order2) << "\n";
