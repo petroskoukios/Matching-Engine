@@ -41,20 +41,18 @@ ErrorCode OrderBook::submit(
     if (orders_map_.contains(order.id)) return ErrorCode::DuplicateId;
     if (order.quantity == 0) return ErrorCode::InvalidQuantity;
     if (order.type == OrderType::Limit)
-        return add(order);
-    else
-        return cancel(order.id);
+        add(order);
+    return ErrorCode::Ok;
 }
 
-ErrorCode OrderBook::add(const Order& order) {  // rest a limit order in the book
-    assert(orders_map_.contains(order.id));
-    assert(order.quantity == 0);
-    assert(order.type == OrderType::Market);
+void OrderBook::add(const Order& order) {  // rest a limit order in the book
+    assert(!orders_map_.contains(order.id));
+    assert(order.quantity != 0);
+    assert(order.type != OrderType::Market);
 
     auto it = order.side == Side::Buy ? insert_at_side(price_levels_bid_, order)
                                       : insert_at_side(price_levels_ask_, order);
     orders_map_[order.id] = it;
-    return ErrorCode::Ok;
 }
 
 ErrorCode OrderBook::cancel(OrderId id) {  // remove entirely
@@ -96,8 +94,6 @@ std::ostream& operator<<(std::ostream& os, ErrorCode code) {
             return os << "InvalidId";
         case ErrorCode::InvalidQuantity:
             return os << "InvalidQuantity";
-        case ErrorCode::MarketOrderCannotRest:
-            return os << "MarketOrderCannotRest";
     }
     return os << "UnknownErrorCode";
 }

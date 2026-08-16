@@ -2,15 +2,14 @@
 
 [![CI](https://github.com/petroskoukios/Matching-Engine/actions/workflows/ci.yml/badge.svg)](https://github.com/petroskoukios/Matching-Engine/actions/workflows/ci.yml)
 
-A limit order book and matching engine written in C++20, designed
-for low-latency operation. It implements price–time priority matching with
-support for limit and market orders, partial fills, and order
-cancellation/modification.
+A limit order book in C++20, designed for low-latency operation.
 
-Built as a systems project with a trading application: correctness first
-(invariant and randomized differential testing), then measured
-performance, benchmark results will be published here as the project
-develops.
+**Implemented:** price-time priority order book (add, cancel, best bid/ask,
+level aggregation), validated at the API boundary, unit-tested with
+sanitizers in CI.
+
+**In progress:** matching engine (limit and market orders, partial fills),
+randomized differential testing against a reference matcher, benchmarks.
 
 **Status:** in active development (August 2026). Core matching engine in
 progress.

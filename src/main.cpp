@@ -4,6 +4,7 @@
 
 int main() {
     orderbook::OrderBook book;
+    std::vector<orderbook::Trade> trades;
     orderbook::Order order1{.id = 1,
                             .price = 100,
                             .quantity = 5,
@@ -35,13 +36,13 @@ int main() {
                             .side = orderbook::Side::Sell,
                             .type = orderbook::OrderType::Limit};
 
-    std::cout << book.add(order1) << "\n";
-    std::cout << book.add(order2) << "\n";
-    std::cout << book.add(order3) << "\n";
-    std::cout << book.add(order4) << "\n";
-    std::cout << book.add(order5) << "\n";
-    std::cout << book.add(order6) << "\n";
-    std::cout << book.add(order1) << "\n";
+    std::cout << book.submit(order1, trades) << "\n";
+    std::cout << book.submit(order2, trades) << "\n";
+    std::cout << book.submit(order3, trades) << "\n";
+    std::cout << book.submit(order4, trades) << "\n";
+    std::cout << book.submit(order5, trades) << "\n";
+    std::cout << book.submit(order6, trades) << "\n";
+    std::cout << book.submit(order1, trades) << "\n";
 
     if (auto result = book.best_bid()) {
         std::cout << "The best bid is: " << result.value() << "\n";

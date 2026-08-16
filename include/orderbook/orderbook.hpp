@@ -16,14 +16,12 @@ enum class ErrorCode : std::uint8_t {
     DuplicateId,
     InvalidId,
     InvalidQuantity,
-    MarketOrderCannotRest,
 };
 
 std::ostream& operator<<(std::ostream& os, ErrorCode code);
 
 class OrderBook {
    public:
-    [[nodiscard]] ErrorCode add(const Order& order);  // rest a limit order in the book
     [[nodiscard]] ErrorCode submit(
         const Order& order,
         std::vector<Trade>& trades);             // execute order, add to orderbook, append trades
@@ -34,6 +32,7 @@ class OrderBook {
                                        Price price) const;  // total resting volume at a level
 
    private:
+    void add(const Order& order);  // rest a limit order in the book
     std::map<Price, std::list<Order>, std::greater<Price>> price_levels_bid_;
     std::map<Price, std::list<Order>, std::less<Price>> price_levels_ask_;
     std::unordered_map<OrderId, std::list<Order>::iterator> orders_map_;
