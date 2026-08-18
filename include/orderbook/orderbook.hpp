@@ -56,7 +56,7 @@ class OrderBook {
             trades.push_back(trade);
 
             if (resting_order.quantity == 0) {
-                orders_map_.erase(resting_order_id);
+                order_index_.erase(resting_order_id);
                 level.pop_front();
                 if (level.empty()) contra_side_levels.erase(level_it);
             }
@@ -64,10 +64,10 @@ class OrderBook {
     }
 
     static bool crosses(const Order& order, Price resting_price);
-    void add(const Order& order);  // rest a limit order in the book
+    void rest_order(const Order& order);  // rest a limit order in the book
     std::map<Price, std::list<Order>, std::greater<Price>> price_levels_bid_;
     std::map<Price, std::list<Order>, std::less<Price>> price_levels_ask_;
-    std::unordered_map<OrderId, std::list<Order>::iterator> orders_map_;
+    std::unordered_map<OrderId, std::list<Order>::iterator> order_index_;
 };
 
 }  // namespace orderbook

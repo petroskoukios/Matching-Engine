@@ -39,7 +39,7 @@ Quantity sum_at(const Levels& levels, Price price) {
 ErrorCode OrderBook::submit(
     const Order& order,
     std::vector<Trade>& trades) {  // execute order, add to orderbook, append trades
-    if (orders_map_.contains(order.id)) return ErrorCode::DuplicateId;
+    if (order_index_.contains(order.id)) return ErrorCode::DuplicateId;
     if (order.quantity == 0) return ErrorCode::InvalidQuantity;
 
     Order incoming_order = order;
@@ -47,8 +47,8 @@ ErrorCode OrderBook::submit(
         match(incoming_order, price_levels_ask_, trades);
     else
         match(incoming_order, price_levels_bid_, trades);
-        
-    if (order.type == OrderType::Limit && incoming_order.quantity != 0) add(incoming_order);
+
+    if (order.type == OrderType::Limit && incoming_order.quantity != 0) rest_order(incoming_order);
     return ErrorCode::Ok;
 }
 
@@ -58,19 +58,19 @@ bool OrderBook::crosses(const Order& order, Price resting_price) {
     return order.price <= resting_price;
 }
 
-void OrderBook::add(const Order& order) {  // rest a limit order in the book
-    assert(!orders_map_.contains(order.id));
+void OrderBook::rest_order(const Order& order) {  // rest a limit order in the book
+    assert(!order_index_.contains(order.id));
     assert(order.quantity != 0);
     assert(order.type != OrderType::Market);
 
     auto it = order.side == Side::Buy ? insert_at_side(price_levels_bid_, order)
                                       : insert_at_side(price_levels_ask_, order);
-    orders_map_[order.id] = it;
+    order_index_[order.id] = it;
 }
 
 ErrorCode OrderBook::cancel(OrderId id) {  // remove entirely
-    auto index_it = orders_map_.find(id);
-    if (index_it == orders_map_.end()) return ErrorCode::InvalidId;
+    auto index_it = order_index_.find(id);
+    if (index_it == order_index_.end()) return ErrorCode::InvalidId;
 
     auto order_it = index_it->second;
 
@@ -79,7 +79,7 @@ ErrorCode OrderBook::cancel(OrderId id) {  // remove entirely
     else
         remove_at_side(price_levels_ask_, order_it);
 
-    orders_map_.erase(index_it);
+    order_index_.erase(index_it);
     return ErrorCode::Ok;
 }
 
