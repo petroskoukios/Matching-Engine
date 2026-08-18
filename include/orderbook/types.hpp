@@ -15,7 +15,7 @@ enum class OrderType : std::uint8_t { Limit, Market };
 
 struct Order {
     OrderId id;
-    Price price;
+    Price price;  // price is unspecified for market orders
     Quantity quantity;
     Side side;
     OrderType type;

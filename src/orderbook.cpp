@@ -37,12 +37,25 @@ Quantity sum_at(const Levels& levels, Price price) {
 }  // namespace
 
 ErrorCode OrderBook::submit(
-    const Order& order, std::vector<Trade>&) {  // execute order, add to orderbook, append trades
+    const Order& order,
+    std::vector<Trade>& trades) {  // execute order, add to orderbook, append trades
     if (orders_map_.contains(order.id)) return ErrorCode::DuplicateId;
     if (order.quantity == 0) return ErrorCode::InvalidQuantity;
-    if (order.type == OrderType::Limit)
-        add(order);
+
+    Order incoming_order = order;
+    if (order.side == Side::Buy)
+        match(incoming_order, price_levels_ask_, trades);
+    else
+        match(incoming_order, price_levels_bid_, trades);
+        
+    if (order.type == OrderType::Limit && incoming_order.quantity != 0) add(incoming_order);
     return ErrorCode::Ok;
+}
+
+bool OrderBook::crosses(const Order& order, Price resting_price) {
+    if (order.type == OrderType::Market) return true;
+    if (order.side == Side::Buy) return order.price >= resting_price;
+    return order.price <= resting_price;
 }
 
 void OrderBook::add(const Order& order) {  // rest a limit order in the book
