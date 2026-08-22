@@ -1,6 +1,6 @@
 #pragma once
 #include <cstdint>
-#include <ostream>
+#include <iosfwd>
 
 namespace orderbook {
 
@@ -30,10 +30,6 @@ struct Trade {
     bool operator==(const Trade&) const = default;
 };
 
-inline std::ostream& operator<<(std::ostream& os, const Trade& trade) {
-    return os << "resting_order_id: " << trade.resting_order_id
-              << " aggressor_order_id: " << trade.aggressor_order_id << " price: " << trade.price
-              << " quantity: " << trade.quantity;
-}
+std::ostream& operator<<(std::ostream& os, const Trade& trade);
 
 }  // namespace orderbook

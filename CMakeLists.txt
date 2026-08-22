@@ -23,6 +23,7 @@ endif()
 # --- The engine library ---
 add_library(orderbook
     src/orderbook.cpp
+    src/types.cpp
 )
 target_include_directories(orderbook PUBLIC include)
 target_link_libraries(orderbook
