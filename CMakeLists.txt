@@ -48,3 +48,14 @@ target_link_libraries(orderbook_tests
     PRIVATE orderbook project_warnings GTest::gtest_main)
 include(GoogleTest)
 gtest_discover_tests(orderbook_tests)
+
+# --- Benchmarks ---
+FetchContent_Declare(
+  googlebenchmark
+  URL https://github.com/google/benchmark/archive/refs/tags/v1.8.3.zip
+)
+set(BENCHMARK_ENABLE_TESTING OFF CACHE BOOL "" FORCE)   # don't build benchmark's own tests
+FetchContent_MakeAvailable(googlebenchmark)
+
+add_executable(orderbook_bench bench/bench_orderbook.cpp)
+target_link_libraries(orderbook_bench PRIVATE orderbook benchmark::benchmark_main)
